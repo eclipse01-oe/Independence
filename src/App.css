@@ -1,0 +1,16 @@
+.audio-toggle-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background-color: var(--text-h);
+  color: #008751;
+  border: none;
+  border-radius: 4px;
+  padding: 0px 20px;
+  cursor: pointer;
+  font-size: clamp(.5rem, (100vw - 480px), 1rem);
+  font-weight: 900;
+  width: clamp(70px, (100vw - 480px), 110px);
+  height: clamp(30px, (100vw - 480px), 50px);
+}
