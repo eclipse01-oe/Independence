@@ -55,7 +55,6 @@ export const sceneData: TimedScene[] = [
 
 export const Scenes = ({ onComplete, onSceneChange }: ScenesProps) => {
     const [activeIndex, setActiveIndex] = useState(0);
-    const [mediaReadyIndex, setMediaReadyIndex] = useState<number | null>(null);
 
     useEffect(() => {
         onSceneChange(activeIndex);
@@ -66,13 +65,6 @@ export const Scenes = ({ onComplete, onSceneChange }: ScenesProps) => {
 
         if (!currentScene) return;
 
-        const hasMedia = Boolean(
-            currentScene.scene.videoUrl || currentScene.scene.imageUrl
-        );
-
-        // Wait until the current scene's media is ready.
-        if (hasMedia && mediaReadyIndex !== activeIndex) return;
-
         const timer = window.setTimeout(() => {
             if (activeIndex < sceneData.length - 1) {
                 setActiveIndex((prev) => prev + 1);
@@ -82,17 +74,11 @@ export const Scenes = ({ onComplete, onSceneChange }: ScenesProps) => {
         }, currentScene.duration);
 
         return () => window.clearTimeout(timer);
-    }, [activeIndex, mediaReadyIndex, onComplete]);
+    }, [activeIndex, onComplete]);
 
     const currentScene = sceneData[activeIndex];
 
     if (!currentScene) return null;
 
-    return (
-        <Scene
-            key={activeIndex}
-            {...currentScene.scene}
-            onMediaReady={() => setMediaReadyIndex(activeIndex)}
-        />
-    );
+    return <Scene key={activeIndex} {...currentScene.scene} />;
 };
