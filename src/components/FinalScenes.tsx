@@ -12,6 +12,8 @@ export const FinalScene = () => {
         return () => clearTimeout(timeout);
     },[flagFormed])
 
+    const srcImg = `${import.meta.env.BASE_URL}coatOfArm/Nigeria_coat_of_arm.webp`;
+
 
     return (
         <main className="final-scene" >
@@ -23,7 +25,7 @@ export const FinalScene = () => {
                     className={`coat-of-arm-div${flagFormed ? " is-visible" : ""}`}
                 >
                     <img
-                        src="/coatOfArm/Nigeria_coat_of_arm.webp"
+                        src={srcImg}
                         alt="Nigerian coat of arms"
                     />
 
