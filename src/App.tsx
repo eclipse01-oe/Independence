@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Scenes } from "./components/Scenes";
 import { FinalScene } from "./components/FinalScenes";
 import { useHeritageAudio } from "./hooks/audio";
@@ -27,6 +27,11 @@ const App = () => {
             await startAudio();
         }
     };
+
+    useEffect(() => {
+        const coatOfArms = new Image();
+        coatOfArms.src = `${import.meta.env.BASE_URL}coatOfArm/Nigeria_coat_of_arm.webp`;
+    }, []);
 
     return (
         <main>

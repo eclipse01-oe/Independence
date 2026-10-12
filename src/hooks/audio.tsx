@@ -84,14 +84,19 @@ export const useHeritageAudio = () => {
 
         if (!drum) return;
 
+        const drumPlayback = drum.play();
+
+        audioEnabledRef.current = true;
+        setIsAudioPlaying(true);
+
+        playVoiceForScene(currentSceneRef.current, false);
+
         try {
-            await drum.play();
-
-            audioEnabledRef.current = true;
-            setIsAudioPlaying(true);
-
-            playVoiceForScene(currentSceneRef.current, false);
+            await drumPlayback;
         } catch (error) {
+            audioEnabledRef.current = false;
+            setIsAudioPlaying(false);
+
             console.error("Unable to start talking drum:", error);
         }
     }, [playVoiceForScene]);

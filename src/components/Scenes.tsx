@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Scene, type SceneInterface } from "./Scene";
 
 interface ScenesProps {
@@ -55,10 +55,35 @@ export const sceneData: TimedScene[] = [
 
 export const Scenes = ({ onComplete, onSceneChange }: ScenesProps) => {
     const [activeIndex, setActiveIndex] = useState(0);
+    const preloadedMediaRef = useRef<(HTMLVideoElement | HTMLImageElement)[]>([]);
 
     useEffect(() => {
         onSceneChange(activeIndex);
     }, [activeIndex, onSceneChange]);
+
+    
+
+    useEffect(() => {
+        const nextScene = sceneData[activeIndex + 1]?.scene;
+
+        if (!nextScene) return;
+
+        if (nextScene.videoUrl) {
+            const video = document.createElement("video");
+            video.preload = "auto";
+            video.muted = true;
+            video.src = nextScene.videoUrl;
+            video.load();
+
+            preloadedMediaRef.current.push(video);
+        } else if (nextScene.imageUrl) {
+            const image = new Image();
+            image.src = nextScene.imageUrl;
+
+            preloadedMediaRef.current.push(image);
+        }
+    }, [activeIndex]);
+    
 
     useEffect(() => {
         const currentScene = sceneData[activeIndex];
