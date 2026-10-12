@@ -63,7 +63,6 @@ export const Canva = ({ onFlagFormed }: ParticleCanvasProps) => {
 
             context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 
-            // Create an invisible canvas for the declaration.
             textCanvas = document.createElement("canvas");
             textCanvas.width = width;
             textCanvas.height = height;
@@ -109,9 +108,8 @@ export const Canva = ({ onFlagFormed }: ParticleCanvasProps) => {
 
             const lineHeight = fontSize * 1.4;
             const totalHeight = lineHeight * (lines.length - 1);
-            const startY = (height - totalHeight ) / 2;
+            const startY = (height - totalHeight) / 2;
 
-            // Draw the declaration on the invisible canvas.
             lines.forEach((line, index) => {
                 textContext.fillText(
                     line,
@@ -120,7 +118,6 @@ export const Canva = ({ onFlagFormed }: ParticleCanvasProps) => {
                 );
             });
 
-            // Sample the pixels occupied by the text.
             const imageData = textContext.getImageData(
                 0,
                 0,
@@ -158,8 +155,7 @@ export const Canva = ({ onFlagFormed }: ParticleCanvasProps) => {
                 }
             }
 
-            // Calculate the flag dimensions.
-            // The Nigerian flag has a 2:1 width-to-height ratio.
+            // Nigerian flag dimensions: width-to-height ratio of 2:1.
             flagWidth = Math.min(width * 0.5, height);
             flagHeight = flagWidth / 2;
 
@@ -168,7 +164,7 @@ export const Canva = ({ onFlagFormed }: ParticleCanvasProps) => {
 
             if (particles.length === 0) return;
 
-            // Calculate each particle's target position in the flag.
+            // Create a complete rectangular particle grid.
             const columns = Math.max(
                 1,
                 Math.ceil(
@@ -176,11 +172,18 @@ export const Canva = ({ onFlagFormed }: ParticleCanvasProps) => {
                 )
             );
 
-            const rows = Math.ceil(particles.length / columns);
+            const rows = Math.floor(particles.length / columns);
+
+            if (rows === 0) return;
+
+            // Remove the incomplete final row to prevent stray particles.
+            particles = particles.slice(0, rows * columns);
 
             const cellWidth = flagWidth / columns;
             const cellHeight = flagHeight / rows;
-            const targetSize = Math.min(cellWidth, cellHeight) * 0.55;
+
+            // arc() uses radius, so keep particles within their grid cells.
+            const targetSize = Math.min(cellWidth, cellHeight) * 0.42;
 
             particles.forEach((particle, index) => {
                 const column = index % columns;
@@ -210,8 +213,12 @@ export const Canva = ({ onFlagFormed }: ParticleCanvasProps) => {
                 : [0, 135, 81];
 
             const red = Math.round(target[0] * progress);
-            const green = Math.round(135 + (target[1] - 135) * progress);
-            const blue = Math.round(81 + (target[2] - 81) * progress);
+            const green = Math.round(
+                135 + (target[1] - 135) * progress
+            );
+            const blue = Math.round(
+                81 + (target[2] - 81) * progress
+            );
 
             return `rgb(${red}, ${green}, ${blue})`;
         };
@@ -234,7 +241,6 @@ export const Canva = ({ onFlagFormed }: ParticleCanvasProps) => {
 
             const elapsed = now - startTime;
 
-            // Clear the previous frame.
             context.fillStyle = "#ffffff";
             context.fillRect(0, 0, width, height);
 
@@ -246,7 +252,7 @@ export const Canva = ({ onFlagFormed }: ParticleCanvasProps) => {
                 return;
             }
 
-            // Phase 2: disintegrate the declaration into particles.
+            // Phase 2: scatter the declaration into particles.
             if (elapsed < holdDuration + scatterDuration) {
                 const seconds = (elapsed - holdDuration) / 1000;
 
@@ -278,7 +284,6 @@ export const Canva = ({ onFlagFormed }: ParticleCanvasProps) => {
                 1
             );
 
-            // Ease out so particles slow down near their targets.
             const easedProgress = 1 - Math.pow(1 - progress, 3);
             const scatterSeconds = scatterDuration / 1000;
 
@@ -299,8 +304,6 @@ export const Canva = ({ onFlagFormed }: ParticleCanvasProps) => {
                     scatterY +
                     (particle.targetY - scatterY) * easedProgress;
 
-                // Interpolate from the original particle size
-                // to the target size without accumulating changes.
                 particle.size =
                     particle.originSize +
                     (particle.targetSize - particle.originSize) *
@@ -313,11 +316,6 @@ export const Canva = ({ onFlagFormed }: ParticleCanvasProps) => {
 
                 drawParticle(particle);
             }
-
-            // Subtle outline around the flag.
-            context.strokeStyle = "#e5e5e5";
-            context.lineWidth = 1;
-            context.strokeRect(flagLeft, flagTop, flagWidth, flagHeight);
 
             if (progress < 1) {
                 animationFrame = window.requestAnimationFrame(animate);

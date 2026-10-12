@@ -30,7 +30,7 @@ const App = () => {
 
     useEffect(() => {
         const images: HTMLImageElement[] = [];
-        
+
         sceneData.forEach(({ scene }) => {
             if (scene.imageUrl) {
                 const image = new Image();
@@ -38,11 +38,21 @@ const App = () => {
                 images.push(image);
             }
         });
-    
+
         const coatOfArms = new Image();
         coatOfArms.src = `${import.meta.env.BASE_URL}coatOfArm/Nigeria_coat_of_arm.webp`;
         images.push(coatOfArms);
     }, []);
+
+
+    useEffect(()=>{
+        if(!showFinalScene) return
+
+        const timer = setTimeout(()=>pauseAudio(), 14000)
+
+        return ()=> clearTimeout(timer)
+        
+    }, [showFinalScene])
 
     return (
         <main>
