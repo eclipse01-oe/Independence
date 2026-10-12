@@ -61,17 +61,17 @@
 
 .culture-video {
     transform: scale(0);
-    animation: cultureAnim 6s ease-in-out .1s alternate forwards;
+    animation: cultureAnim 5.5s ease-in-out .1s alternate forwards;
 }
 
 .heritage-video {
     opacity: 0;
-    animation: heritageAnim 6s ease-in-out .5s alternate forwards;
+    animation: heritageAnim 5.5s ease-in-out .5s alternate forwards;
 }
 
 .people-image {
     transform: translateY(-100%);
-    animation: peopleAnim 6s ease-in-out .5s alternate forwards;
+    animation: peopleAnim 5.5s ease-in-out .5s alternate forwards;
 }
 
 @keyframes textAnim {

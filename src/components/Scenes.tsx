@@ -23,7 +23,7 @@ export const sceneData: TimedScene[] = [
     },
     {
         scene: {
-            videoUrl: `${import.meta.env.BASE_URL}culture/Nigeria_culture.mp4`,
+            videoUrl: `${import.meta.env.BASE_URL}culture/Nigeria_culture_optimized.mp4`,
             text: "OUR CULTURE",
             sceneClass: "culture-scene",
             mediaClass: "culture-video",
@@ -33,7 +33,7 @@ export const sceneData: TimedScene[] = [
     },
     {
         scene: {
-            videoUrl: `${import.meta.env.BASE_URL}heritage/Nigeria_heritage.mp4`,
+            videoUrl: `${import.meta.env.BASE_URL}heritage/Nigeria_heritage_optimized.mp4`,
             text: "OUR HERITAGE",
             sceneClass: "heritage-scene",
             mediaClass: "heritage-video",
@@ -43,7 +43,7 @@ export const sceneData: TimedScene[] = [
     },
     {
         scene: {
-            imageUrl: `${import.meta.env.BASE_URL}people/Nigeria_people.png`,
+            imageUrl: `${import.meta.env.BASE_URL}people/Nigeria_people.webp`,
             text: "OUR PEOPLE",
             sceneClass: "people-scene",
             mediaClass: "people-image",
@@ -83,7 +83,7 @@ export const Scenes = ({ onComplete, onSceneChange }: ScenesProps) => {
             preloadedMediaRef.current.push(image);
         }
     }, [activeIndex]);
-    
+
 
     useEffect(() => {
         const currentScene = sceneData[activeIndex];
