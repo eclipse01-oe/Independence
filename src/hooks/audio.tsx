@@ -21,7 +21,16 @@ export const useHeritageAudio = () => {
         drum.volume = .7;
 
         const voice = new Audio();
+        voice.preload = "auto";
         voice.volume = 1;
+
+        const preloadedVoices = Object.values(voiceByScene).map((src) => {
+            const audio = new Audio();
+            audio.preload = "auto";
+            audio.src = src;
+            audio.load();
+            return audio;
+        });
 
         drumRef.current = drum;
         voiceRef.current = voice;
@@ -29,12 +38,14 @@ export const useHeritageAudio = () => {
         return () => {
             drum.pause();
             voice.pause();
+            preloadedVoices.forEach((audio) => audio.pause());
 
             drumRef.current = null;
             voiceRef.current = null;
         };
     }, []);
 
+    
     const playVoiceForScene = useCallback((sceneIndex: number, restart: boolean) => {
         const audioPath = voiceByScene[sceneIndex];
         const drum = drumRef.current;

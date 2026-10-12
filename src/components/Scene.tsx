@@ -1,11 +1,5 @@
 import React from "react"
 
-
-export interface EachSceneInterface {
-    divStyle?: React.CSSProperties;
-    divClass?: string;
-}
-
 export interface SceneInterface {
     imageUrl?: string;
     videoUrl?: string;
