@@ -9,7 +9,7 @@
 /* Coat of arms container */
 .coat-of-arm-div {
     position: absolute;
-    top: 50%;
+    top: clamp(30vh, (100vh - 480px), 50vh);
     left: 0;
     width: 100%;
     display: flex;

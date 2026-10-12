@@ -61,7 +61,7 @@ export const useHeritageAudio = () => {
             return;
         }
 
-        voice.playbackRate = 0.7;
+        voice.playbackRate = 0.8;
         voice.preservesPitch = true;
 
         drum.volume = 0.2;
