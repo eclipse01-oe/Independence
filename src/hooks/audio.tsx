@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const voiceByScene: Record<number, string> = {
-    0: "/audio/Nigeria.mp3",
-    1: "/audio/our_culture.mp3",
-    2: "/audio/our_heritage.mp3",
-    3: "/audio/our_people.mp3",
+    0: `${import.meta.env.BASE_URL}audio/Nigeria.mp3`,
+    1: `${import.meta.env.BASE_URL}audio/our_culture.mp3`,
+    2: `${import.meta.env.BASE_URL}audio/our_heritage.mp3`,
+    3: `${import.meta.env.BASE_URL}audio/our_people.mp3`,
 };
 
 export const useHeritageAudio = () => {
@@ -16,7 +16,7 @@ export const useHeritageAudio = () => {
     const [isAudioPlaying, setIsAudioPlaying] = useState(false);
 
     useEffect(() => {
-        const drum = new Audio("/audio/talking_drum.mp3");
+        const drum = new Audio(`${import.meta.env.BASE_URL}audio/talking_drum.mp3`);
         drum.loop = true;
         drum.volume = .7;
 

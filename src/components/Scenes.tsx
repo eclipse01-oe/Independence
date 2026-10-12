@@ -5,6 +5,7 @@ interface ScenesProps {
     onComplete: () => void;
     onSceneChange: (index: number) => void;
 }
+
 interface TimedScene {
     scene: SceneInterface;
     duration: number;
@@ -22,7 +23,7 @@ export const sceneData: TimedScene[] = [
     },
     {
         scene: {
-            videoUrl: "/culture/Nigeria_culture.mp4",
+            videoUrl: `${import.meta.env.BASE_URL}culture/Nigeria_culture.mp4`,
             text: "OUR CULTURE",
             sceneClass: "culture-scene",
             mediaClass: "culture-video",
@@ -32,7 +33,7 @@ export const sceneData: TimedScene[] = [
     },
     {
         scene: {
-            videoUrl: "/heritage/Nigeria_heritage.mp4",
+            videoUrl: `${import.meta.env.BASE_URL}heritage/Nigeria_heritage.mp4`,
             text: "OUR HERITAGE",
             sceneClass: "heritage-scene",
             mediaClass: "heritage-video",
@@ -42,7 +43,7 @@ export const sceneData: TimedScene[] = [
     },
     {
         scene: {
-            imageUrl: "/people/Nigeria_people.png",
+            imageUrl: `${import.meta.env.BASE_URL}people/Nigeria_people.png`,
             text: "OUR PEOPLE",
             sceneClass: "people-scene",
             mediaClass: "people-image",
@@ -53,7 +54,6 @@ export const sceneData: TimedScene[] = [
 ];
 
 export const Scenes = ({ onComplete, onSceneChange }: ScenesProps) => {
-
     const [activeIndex, setActiveIndex] = useState(0);
 
     useEffect(() => {
@@ -71,9 +71,9 @@ export const Scenes = ({ onComplete, onSceneChange }: ScenesProps) => {
             } else {
                 onComplete();
             }
-    }, currentScene.duration);
+        }, currentScene.duration);
 
-    return () => window.clearTimeout(timer);
+        return () => window.clearTimeout(timer);
     }, [activeIndex, onComplete]);
 
     const currentScene = sceneData[activeIndex];
