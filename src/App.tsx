@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Scenes } from "./components/Scenes";
+import { Scenes, sceneData } from "./components/Scenes";
 import { FinalScene } from "./components/FinalScenes";
 import { useHeritageAudio } from "./hooks/audio";
 import "./css/scene.css";
@@ -29,8 +29,19 @@ const App = () => {
     };
 
     useEffect(() => {
+        const images: HTMLImageElement[] = [];
+        
+        sceneData.forEach(({ scene }) => {
+            if (scene.imageUrl) {
+                const image = new Image();
+                image.src = scene.imageUrl;
+                images.push(image);
+            }
+        });
+    
         const coatOfArms = new Image();
         coatOfArms.src = `${import.meta.env.BASE_URL}coatOfArm/Nigeria_coat_of_arm.webp`;
+        images.push(coatOfArms);
     }, []);
 
     return (
