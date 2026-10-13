@@ -14,7 +14,7 @@ export const FinalScene = () => {
     }, [flagFormed]);
 
     const srcImg = `${import.meta.env.BASE_URL}coatOfArm/Nigeria_coat_of_arm.webp`;
-    const nigeriaMapSrc = `${import.meta.env.BASE_URL}maps/Nigeria_map.svg`;
+    const nigeriaMapSrc = `${import.meta.env.BASE_URL}map/Nigeria_map.svg`;
 
     return (
         <main className="final-scene">
