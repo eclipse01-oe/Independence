@@ -42,7 +42,7 @@
 /* Coat of arms container */
 .coat-of-arm-div {
     position: absolute;
-    top: clamp(30vh, (100vh - 480px), 50vh);
+    top: clamp(220px, (100vw - 670px), 670px);
     left: 0;
     width: 100%;
     display: flex;
@@ -58,6 +58,7 @@
 /* Reveal after the flag forms */
 .coat-of-arm-div.is-visible {
     opacity: 1;
+    visibility: visible;
 }
 
 /* Responsive coat of arms */
@@ -109,11 +110,6 @@
 
 .national-identity-section.not-visible{
     animation: finalSceneNotVisible 1.6s ease-in-out forwards;
-}
-
-.coat-of-arm-div.is-visible {
-    opacity: 1;
-    visibility: visible;
 }
 
 .final-info-div {
