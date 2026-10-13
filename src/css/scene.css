@@ -70,7 +70,11 @@
 }
 
 .people-image {
-    transform: translateY(-100%);
+    opacity: 0;
+    animation: peopleAnim 5.5s ease-in-out .5s alternate forwards;
+}
+
+.people_text{
     animation: peopleAnim 5.5s ease-in-out .5s alternate forwards;
 }
 
@@ -137,23 +141,25 @@
     }
 
     100% {
-        opacity: 1;
-        transform: translateY(-100%);
+        opacity: 0;
     }
 }
 
 @keyframes peopleAnim {
     0% {
-        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    30% {
+        opacity: 1;
     }
 
     50% {
-        transform: translateY(0);
+        opacity: 1;
     }
 
     75% {
         transform: none;
-        opacity: 1;
     }
 
     100% {

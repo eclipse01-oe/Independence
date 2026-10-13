@@ -22,6 +22,7 @@ interface Particle {
 
 export const Canva = ({ onFlagFormed }: ParticleCanvasProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const backdropBlurRef = useRef<HTMLDivElement>(null);
     const onFlagFormedRef = useRef(onFlagFormed);
 
     useEffect(() => {
@@ -31,20 +32,25 @@ export const Canva = ({ onFlagFormed }: ParticleCanvasProps) => {
     useEffect(() => {
         const canvas = canvasRef.current;
         const context = canvas?.getContext("2d");
+        const backdropBlur = backdropBlurRef.current;
 
-        if (!canvas || !context) return;
+        if (!canvas || !context || !backdropBlur) return;
 
         let width = 0;
         let height = 0;
         let particles: Particle[] = [];
         let textCanvas: HTMLCanvasElement | null = null;
+        let shimmerCanvas: HTMLCanvasElement | null = null;
+        let shimmerContext: CanvasRenderingContext2D | null = null;
         let animationFrame = 0;
         let startTime = 0;
         let formationCompleteNotified = false;
+        let blurHidden = false;
 
-        const holdDuration = 1600;
+        const holdDuration = 3700;
         const scatterDuration = 2200;
         const formationDuration = 2500;
+        const shimmerDuration = holdDuration;
         const gravity = 25;
 
         let flagLeft = 0;
@@ -66,6 +72,10 @@ export const Canva = ({ onFlagFormed }: ParticleCanvasProps) => {
             textCanvas = document.createElement("canvas");
             textCanvas.width = width;
             textCanvas.height = height;
+            shimmerCanvas = document.createElement("canvas");
+            shimmerCanvas.width = width;
+            shimmerCanvas.height = height;
+            shimmerContext = shimmerCanvas.getContext("2d");
 
             const textContext = textCanvas.getContext("2d");
 
@@ -78,13 +88,13 @@ export const Canva = ({ onFlagFormed }: ParticleCanvasProps) => {
                 ? [
                     "NIGERIA.",
                     "WE HAIL THEE.",
-                    "UNITY, FAITH,",
-                    "PEACE, AND PROGRESS.",
+                    "UNITY FAITH",
+                    "PEACE AND PROGRESS.",
                 ]
                 : [
                     "NIGERIA.",
                     "WE HAIL THEE.",
-                    "UNITY, FAITH, PEACE, AND PROGRESS.",
+                    "UNITY FAITH PEACE AND PROGRESS.",
                 ];
 
             let fontSize = Math.min(64, width * 0.075);
@@ -102,7 +112,8 @@ export const Canva = ({ onFlagFormed }: ParticleCanvasProps) => {
                 textContext.font = `700 ${fontSize}px Arial, sans-serif`;
             }
 
-            textContext.fillStyle = "#008751";
+            // Create the text mask.
+            textContext.fillStyle = "#ffffff";
             textContext.textAlign = "center";
             textContext.textBaseline = "middle";
 
@@ -117,6 +128,14 @@ export const Canva = ({ onFlagFormed }: ParticleCanvasProps) => {
                     startY + index * lineHeight
                 );
             });
+
+            // Use the text shape to restrict the backdrop blur to the letters.
+            const textMask = `url("${textCanvas.toDataURL("image/png")}")`;
+
+            backdropBlur.style.maskImage = textMask;
+            backdropBlur.style.setProperty("-webkit-mask-image", textMask);
+            backdropBlur.style.opacity = "1";
+            blurHidden = false;
 
             const imageData = textContext.getImageData(
                 0,
@@ -181,14 +200,11 @@ export const Canva = ({ onFlagFormed }: ParticleCanvasProps) => {
 
             const cellWidth = flagWidth / columns;
             const cellHeight = flagHeight / rows;
-
-            // arc() uses radius, so keep particles within their grid cells.
             const targetSize = Math.min(cellWidth, cellHeight) * 0.42;
 
             particles.forEach((particle, index) => {
                 const column = index % columns;
                 const row = Math.floor(index / columns);
-
                 const horizontalPosition = (column + 0.5) / columns;
 
                 particle.targetX = flagLeft + (column + 0.5) * cellWidth;
@@ -213,12 +229,8 @@ export const Canva = ({ onFlagFormed }: ParticleCanvasProps) => {
                 : [0, 135, 81];
 
             const red = Math.round(target[0] * progress);
-            const green = Math.round(
-                135 + (target[1] - 135) * progress
-            );
-            const blue = Math.round(
-                81 + (target[2] - 81) * progress
-            );
+            const green = Math.round(135 + (target[1] - 135) * progress);
+            const blue = Math.round(81 + (target[2] - 81) * progress);
 
             return `rgb(${red}, ${green}, ${blue})`;
         };
@@ -236,20 +248,94 @@ export const Canva = ({ onFlagFormed }: ParticleCanvasProps) => {
             context.fill();
         };
 
+        // Draw translucent glass-like text with a light-green-to-white gradient.
+        const drawTranslucentText = () => {
+            if (!textCanvas) return;
+
+            context.drawImage(textCanvas, 0, 0);
+
+            const gradient = context.createLinearGradient(0, 0, width, 0);
+
+            gradient.addColorStop(0, "rgba(144, 238, 144, 0.20)");
+            gradient.addColorStop(0.25, "rgba(200, 255, 200, 0.30)");
+            gradient.addColorStop(0.45, "rgba(240, 255, 240, 0.42)");
+            gradient.addColorStop(0.52, "rgba(255, 255, 255, 0.52)");
+            gradient.addColorStop(0.70, "rgba(220, 255, 220, 0.35)");
+            gradient.addColorStop(1, "rgba(144, 238, 144, 0.20)");
+
+            context.globalCompositeOperation = "source-in";
+            context.fillStyle = gradient;
+            context.fillRect(0, 0, width, height);
+
+            context.globalCompositeOperation = "source-over";
+        };
+
+        // Sweep a bright white highlight with a soft light-green glow.
+        const drawTextShimmer = (elapsed: number) => {
+            if (!textCanvas || !shimmerCanvas || !shimmerContext) return;
+
+            // Repeat the shimmer independently of the text hold duration.
+            const progress = (elapsed % shimmerDuration) / shimmerDuration;
+            const centerX = -140 + progress * (width + 280);
+
+            shimmerContext.clearRect(0, 0, width, height);
+
+            const gradient = shimmerContext.createLinearGradient(
+                centerX - 100,
+                0,
+                centerX + 100,
+                0
+            );
+        
+            gradient.addColorStop(0, "rgba(144, 238, 144, 0)");
+            gradient.addColorStop(0.32, "rgba(144, 238, 144, 0.04)");
+            gradient.addColorStop(0.42, "rgba(144, 238, 144, 0.28)");
+            gradient.addColorStop(0.48, "rgba(210, 255, 210, 0.75)");
+            gradient.addColorStop(0.5, "rgba(255, 255, 255, 1)");
+            gradient.addColorStop(0.52, "rgba(220, 255, 220, 0.85)");
+            gradient.addColorStop(0.60, "rgba(144, 238, 144, 0.25)");
+            gradient.addColorStop(0.72, "rgba(144, 238, 144, 0)");
+            gradient.addColorStop(1, "rgba(144, 238, 144, 0)");
+        
+            shimmerContext.fillStyle = gradient;
+            shimmerContext.fillRect(0, 0, width, height);
+        
+            // Restrict the highlight to the actual text glyphs.
+            shimmerContext.globalCompositeOperation = "destination-in";
+            shimmerContext.drawImage(textCanvas, 0, 0);
+            shimmerContext.globalCompositeOperation = "source-over";
+        
+            // Layer the bright highlight over the translucent text.
+            context.globalCompositeOperation = "source-over";
+            context.drawImage(shimmerCanvas, 0, 0);
+        };
+
         const animate = (now: number) => {
             if (!textCanvas) return;
 
             const elapsed = now - startTime;
 
-            context.fillStyle = "#ffffff";
-            context.fillRect(0, 0, width, height);
+            // Keep the canvas itself transparent.
+            context.clearRect(0, 0, width, height);
 
-            // Phase 1: display the declaration.
+            // Phase 1: translucent glass text with a repeating shimmer.
             if (elapsed < holdDuration) {
-                context.drawImage(textCanvas, 0, 0);
+                if (blurHidden) {
+                    backdropBlur.style.opacity = "1";
+                    blurHidden = false;
+                }
+
+                drawTranslucentText();
+                drawTextShimmer(elapsed);
 
                 animationFrame = window.requestAnimationFrame(animate);
                 return;
+            }
+
+            // Remove the backdrop blur as the text scatters.
+            if (!blurHidden) {
+                backdropBlur.style.opacity = "0";
+                blurHidden = true;
             }
 
             // Phase 2: scatter the declaration into particles.
@@ -275,7 +361,7 @@ export const Canva = ({ onFlagFormed }: ParticleCanvasProps) => {
                 return;
             }
 
-            // Phase 3: form the Nigerian flag.
+            // Phase 3: particles form the Nigerian flag.
             const formationElapsed =
                 elapsed - holdDuration - scatterDuration;
 
@@ -350,11 +436,19 @@ export const Canva = ({ onFlagFormed }: ParticleCanvasProps) => {
     }, []);
 
     return (
-        <canvas
-            ref={canvasRef}
-            className="final-canvas"
-            aria-label="Nigerian independence declaration transforming into the Nigerian flag"
-            role="img"
-        />
+        <>
+            <div
+                ref={backdropBlurRef}
+                className="text-backdrop-blur"
+                aria-hidden="true"
+            />
+
+            <canvas
+                ref={canvasRef}
+                className="final-canvas"
+                aria-label="Nigerian independence declaration transforming into the Nigerian flag"
+                role="img"
+            />
+        </>
     );
 };

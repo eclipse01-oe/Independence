@@ -18,7 +18,7 @@ export const useHeritageAudio = () => {
     useEffect(() => {
         const drum = new Audio(`${import.meta.env.BASE_URL}audio/talking_drum.mp3`);
         drum.loop = true;
-        drum.volume = .7;
+        drum.volume = .6;
 
         const voice = new Audio();
         voice.preload = "auto";
@@ -55,7 +55,7 @@ export const useHeritageAudio = () => {
 
         if (!audioPath) {
             voice.pause();
-            drum.volume = .7;
+            drum.volume = .6;
             return;
         }
 
@@ -68,17 +68,17 @@ export const useHeritageAudio = () => {
         }
 
         if (!restart && sameSource && voice.ended) {
-            drum.volume = .7;
+            drum.volume = .6;
             return;
         }
 
         voice.playbackRate = 0.8;
         voice.preservesPitch = true;
 
-        drum.volume = 0.2;
+        drum.volume = 0.3;
 
         const restoreDrumVolume = () => {
-            if (drumRef.current) drumRef.current.volume = .7;
+            if (drumRef.current) drumRef.current.volume = .6;
         };
 
         voice.onended = restoreDrumVolume;
