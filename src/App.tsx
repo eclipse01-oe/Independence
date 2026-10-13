@@ -41,7 +41,10 @@ const App = () => {
 
         const coatOfArms = new Image();
         coatOfArms.src = `${import.meta.env.BASE_URL}coatOfArm/Nigeria_coat_of_arm.webp`;
-        images.push(coatOfArms);
+
+        const map = new Image();
+        map.src = `${import.meta.env.BASE_URL}map/Nigeria_map.svg`
+        images.push(coatOfArms, map);
     }, []);
 
 
