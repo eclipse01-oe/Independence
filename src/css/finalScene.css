@@ -39,12 +39,12 @@
     transition: opacity 1s ease;
 }
 
-/* Coat of arms container */
 .coat-of-arm-div {
     position: absolute;
     top: clamp(300px, (100vw - 670px), 670px);
     left: 0;
     width: 100%;
+    height: 50%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -53,15 +53,18 @@
     text-align: center;
     opacity: 0;
     transition: opacity 0.6s ease, visibility 0.6s ease;
+
+    p {
+        position: absolute;
+        bottom: 32.5%;
+    }
 }
 
-/* Reveal after the flag forms */
 .coat-of-arm-div.is-visible {
     opacity: 1;
     visibility: visible;
 }
 
-/* Responsive coat of arms */
 .coat-of-arm-div img {
     display: block;
     width: var(--coat-of-arm-size);
@@ -71,7 +74,6 @@
     margin-inline: auto;
 }
 
-/* Animate from viewport width to normal size */
 .coat-of-arm-div.is-visible img {
     animation: coatOfArmsShrink 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     filter: drop-shadow(0 8px 28px rgba(0, 0, 0, 0.24));

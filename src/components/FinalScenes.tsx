@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Canva } from "./ParticleCanvas";
+import { env_config } from "../utils/import"; 
 
 
 export const FinalScene = () => {
@@ -13,8 +14,8 @@ export const FinalScene = () => {
         return () => clearTimeout(timeout);
     }, [flagFormed]);
 
-    const srcImg = `${import.meta.env.BASE_URL}coatOfArm/Nigeria_coat_of_arm.webp`;
-    const nigeriaMapSrc = `${import.meta.env.BASE_URL}map/Nigeria_map.svg`;
+    const srcImg = `${env_config}coatOfArm/Nigeria_coat_of_arm.webp`;
+    const nigeriaMapSrc = `${env_config}map/Nigeria_map.svg`;
 
     return (
         <main className="final-scene">
