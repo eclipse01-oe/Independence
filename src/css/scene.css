@@ -23,7 +23,7 @@
     text-align: center;
     z-index: 1;
     margin: 0;
-    border-radius: 50%;
+    border-radius: 35% 50% 50% 50%;
     padding-inline: var(--scene-padding);
     line-height: 1;
     font-weight: 900;
